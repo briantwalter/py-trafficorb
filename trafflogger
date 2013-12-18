@@ -5,6 +5,7 @@
 #
 
 import time
+import datetime
 import requests
 
 # output CSV file
@@ -24,8 +25,17 @@ while True:
     data = response.json()
     # open the csv file in append mode
     file = open(out, "a")
+    # parse updated time
+    ts = str(data['TimeUpdated'])
+    # need to strip off tz and extra characters from the data to get epoch
+    head = 'Date('
+    tail = '-0800'
+    # grab string as epoch time stamp here
+    ets = ts[ts.find(head)+len(head):ts.rfind(tail)]
+    # get a human readable time stamp
+    hts = datetime.datetime.fromtimestamp(float(ets)/1000.).strftime('%Y-%m-%d,%H:%M:%S')
     # build a row to enter in the file
-    row = str(data['Description']) + "," + str(data['AverageTime']) + "," + str(data['CurrentTime']) + "\n"
+    row = str(data['Description']) + "," + hts + "," + str(data['AverageTime']) + "," + str(data['CurrentTime']) + "\n"
     # write the row to the file
     file.write(row)
     # close the file don't leave it open in between intervals
