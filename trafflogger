@@ -1,0 +1,34 @@
+#!/usr/bin/python
+
+#
+# trafficlogger
+#
+
+import time
+import requests
+
+# output CSV file
+out = 'sea2bell.csv'
+# you will need your own [free] API key
+# get it here http://www.wsdot.wa.gov/traffic/api/
+key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+# Seattle to Bellevue I-90
+url = 'http://www.wsdot.wa.gov/Traffic/api/TravelTimes/TravelTimesREST.svc/GetTravelTimeAsJson?TravelTimeID=96&AccessCode=' + key
+
+
+# loop forever checking every 5 minutes
+while True:
+    # GET the url
+    response = requests.get(url)
+    # load the JSON response to a data object
+    data = response.json()
+    # open the csv file in append mode
+    file = open(out, "a")
+    # build a row to enter in the file
+    row = str(data['Description']) + "," + str(data['AverageTime']) + "," + str(data['CurrentTime']) + "\n"
+    # write the row to the file
+    file.write(row)
+    # close the file don't leave it open in between intervals
+    file.close()
+    # go to sleep
+    time.sleep(300)	# check every 5 minutes
