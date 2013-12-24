@@ -14,10 +14,12 @@ pir_pin = 4
 io.setup(pir_pin, io.IN)
 # you will need your own [free] API key
 # get it here http://www.wsdot.wa.gov/traffic/api/
-key = '1202a7ff-fd0c-47da-8bdb-bb57a54fc396'
+key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 # Seattle to Bellevue I-90
 url = 'http://www.wsdot.wa.gov/Traffic/api/TravelTimes/TravelTimesREST.svc/GetTravelTimeAsJson?TravelTimeID=96&AccessCode=' + key
 
+
+#== Start LCD class
 class Adafruit_CharLCD:
 
     # commands
@@ -260,10 +262,10 @@ class Adafruit_CharLCD:
                 self.write4bits(0xC0) # next line
             else:
                 self.write4bits(ord(char),True)
+#== End LCD Class
 
-
-if __name__ == '__main__':
-
+#== define main program
+def run():
     while True:
         lcd = Adafruit_CharLCD()
         lcd.clear()
@@ -281,3 +283,7 @@ if __name__ == '__main__':
             lcd.message("Average: " + avg + " mins\nCurrent: " + cur + " mins")
             time.sleep(20)
         time.sleep(5)
+
+#== start main program
+if __name__ == '__main__':
+    run()
