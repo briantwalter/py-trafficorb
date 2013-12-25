@@ -269,7 +269,7 @@ def run():
     while True:
         lcd = Adafruit_CharLCD()
         lcd.clear()
-        lcd.message("I-90 Seattle\nto Bellvue") 
+        lcd.message("I-90 Seattle\nto Bellevue") 
         if io.input(pir_pin):
             # GET the url
             response = requests.get(url)
