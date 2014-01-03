@@ -11,6 +11,3 @@ Glowing orb to show current traffic times for my commute.
 
 `trafficlog` - activates the WSDOT web service and logs times to a CSV file
 
-### Eagle PCB Files
-
-Something something
