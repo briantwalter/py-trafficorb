@@ -7,7 +7,7 @@ Simple RPi code to show my communte times from Seattle to Bellevue (WA) on a 16x
 
 ### Utilities
 
-`trafficlcd.py` - uses passive infared sensor and prints traffic times to 16x2 LCD
+`trafficlcd.py` uses passive infared sensor and prints traffic times to 16x2 LCD
 
-`trafficlog`.py - activates the WSDOT web service and logs times to a CSV file
+`trafficlog.py` activates the WSDOT web service and logs times to a CSV file
 
