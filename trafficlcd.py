@@ -1,26 +1,48 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
+#
+# trafficlcd.py		LCD display for WSDOT traffic info
+# version		0.1.1
+# author		Brian Walter @briantwalter
+# description		Show current and average commute times
+#			from Seattle to Bellevue on a 16x2 LCD
+
+# imports
 import os
-import datetime
 import time
+import datetime
 import requests
-import RPi.GPIO as io
-io.setmode(io.BCM)
-io.setwarnings(False)
+from daemon import runner
+from  ConfigParser import SafeConfigParser
+# GPIO set up
+import RPi.GPIO as gpio
+gpio.setmode(gpio.BCM)
+gpio.setwarnings(False)
+pirsensor = 4
+gpio.setup(pirsensor, gpio.IN)
 
+# configs
+config = SafeConfigParser()
+config.read('config.py')
+logfile = config.get('trafficlcd', 'logfile')
+pidfile = config.get('trafficlcd', 'pidfile')
+apiurl = config.get('trafficlcd', 'apiurl')
+apikey = config.get('trafficlcd', 'apikey')
+url = apiurl + apikey
 
-# set up variables
-pir_pin = 4
-io.setup(pir_pin, io.IN)
-# you will need your own [free] API key
-# get it here http://www.wsdot.wa.gov/traffic/api/
-key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-# Seattle to Bellevue I-90
-url = 'http://www.wsdot.wa.gov/Traffic/api/TravelTimes/TravelTimesREST.svc/GetTravelTimeAsJson?TravelTimeID=96&AccessCode=' + key
-
+# daemon properties
+class App():
+    def __init__(self):
+        self.stdin_path = '/dev/null'
+        self.stdout_path = logfile
+        self.stderr_path = logfile
+        self.pidfile_path =  pidfile
+        self.pidfile_timeout = 5
+    def run(self):
+        main()
 
 #== Start LCD class
-class Adafruit_CharLCD:
+class SimpleLCD:
 
     # commands
     LCD_CLEARDISPLAY 		= 0x01
@@ -262,15 +284,14 @@ class Adafruit_CharLCD:
                 self.write4bits(0xC0) # next line
             else:
                 self.write4bits(ord(char),True)
-#== End LCD Class
 
 #== define main program
-def run():
+def main():
     while True:
-        lcd = Adafruit_CharLCD()
+        lcd = SimpleLCD()
         lcd.clear()
         lcd.message("I-90 Seattle\nto Bellevue") 
-        if io.input(pir_pin):
+        if gpio.input(pirsensor):
             # GET the url
             response = requests.get(url)
             # load the JSON response to a data object
@@ -284,6 +305,8 @@ def run():
             time.sleep(20)
         time.sleep(5)
 
-#== start main program
-if __name__ == '__main__':
-    run()
+# execute the app according to argument
+app = App()
+daemon_runner = runner.DaemonRunner(app)
+daemon_runner.do_action()
+

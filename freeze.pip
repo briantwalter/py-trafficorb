@@ -1,0 +1,12 @@
+RPi.GPIO==0.5.5
+argparse==1.2.1
+lockfile==0.8
+metaconfig==0.1.4a1
+numpy==1.6.2
+pifacecommon==4.0.0
+pifacedigitalio==3.0.4
+pygame==1.9.1release
+python-daemon==1.5.5
+python-dateutil==1.5
+requests==2.3.0
+wsgiref==0.1.2
